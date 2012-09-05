@@ -1,0 +1,42 @@
+[user]
+	name = Simon Lindholm
+	email = simon.lindholm10@gmail.com
+[color]
+	interactive = auto
+	diff = auto
+	pager = false
+[interactive]
+	singlekey = true
+[core]
+	pager = /home/lars/bin/dless
+[rebase]
+	autosquash = true
+[diff]
+	# Detect renames as well as copies
+	renames = copies
+[push]
+	# 'git push' should only push the current branch
+	default = upstream
+[alias]
+	ci = commit
+	ca = diff --cached
+	st = status
+	co = checkout
+	cob = checkout -b
+	to = rebase HEAD
+	fix = commit --amend -C HEAD
+	pullr = pull --rebase
+	panic = !tar cvf ../git_panic.tar .
+	br = branch
+	la = log --pretty=\"format:%ad %h (%an): %s\" --date=short
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	bl = gui blame
+	mdiff = difftool --no-prompt -t meld
+	dif = diff
+	d = diff --patience
+	showw = show HEAD~
+	showww = show HEAD~~
+	showwww = show HEAD~~~
+	showwwww = show HEAD~~~~
+[url "git@github.com:simonlindholm/"]
+	pushInsteadOf = "https://github.com/simonlindholm/"
