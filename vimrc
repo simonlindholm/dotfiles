@@ -22,7 +22,7 @@ if has("autocmd")
 	filetype plugin indent on
 
 	" Don't continue comments over several lines.
-	autocmd BufNewFile,BufRead * setlocal formatoptions-=o | setlocal formatoptions-=r
+	au BufNewFile,BufRead * setlocal formatoptions-=o | setlocal formatoptions-=r
 
 	" Vala support
 	au BufRead,BufNewFile *.vala call s:MyValaSettings()
@@ -35,15 +35,11 @@ if has("autocmd")
 	" Save things on lost focus
 	au FocusLost silent! :wa
 
-    au BufRead,BufNewFile /home/lars/simon/programming/FireClosure/* setlocal expandtab
     au BufRead,BufNewFile /home/lars/simon/programming/firebug/* setlocal expandtab
 endif
 
 
-" The following are commented out as they cause vim to behave a lot
-" differently from regular Vi. They are highly recommended though.
 set showcmd         " Show (partial) command in status line.
-"set showmatch      " Briefly jump to matching brackets.
 set ignorecase      " Do case insensitive matching
 set smartcase       " Do smart case matching
 set incsearch       " Incremental search
@@ -83,7 +79,8 @@ set wildmode=longest:full
 cmap w!! w !sudo tee % >/dev/null
 
 " Nicer highlighting color for matching parens
-highlight MatchParen ctermbg=7
+highlight MatchParen ctermbg=0
+"highlight MatchParen ctermbg=7 " light background
 
 " Automatically change to the containing directory when opening a file
 set autochdir
@@ -153,3 +150,5 @@ endfunction
 " let mapleader = ","
 
 nnoremap <leader>w :w<cr>
+
+noremap <c-c> "+y
