@@ -4,11 +4,9 @@
 [color]
 	interactive = auto
 	diff = auto
-	pager = false
+	pager = true
 [interactive]
 	singlekey = true
-[core]
-	pager = /home/lars/bin/dless
 [rebase]
 	autosquash = true
 [diff]
@@ -25,6 +23,7 @@
 	cob = checkout -b
 	to = rebase HEAD
 	fix = commit --amend -C HEAD
+	amend = commit --amend
 	pullr = pull --rebase
 	panic = !tar cvf ../git_panic.tar .
 	br = branch
@@ -33,10 +32,18 @@
 	bl = gui blame
 	mdiff = difftool --no-prompt -t meld
 	dif = diff
+	hsow = show
 	d = diff --patience
 	showw = show HEAD~
-	showww = show HEAD~~
-	showwww = show HEAD~~~
-	showwwww = show HEAD~~~~
+	showww = show HEAD~2
+	showwww = show HEAD~3
+	showwwww = show HEAD~4
+	showwwwww = show HEAD~5
+	showwwwwww = show HEAD~6
+	showwwwwwww = show HEAD~7
+	showwwwwwwww = show HEAD~8
+	showwwwwwwwww = show HEAD~9
+	showwwwwwwwwww = show HEAD~10
+	showwwwwwwwwwww = show HEAD~11
 [url "git@github.com:simonlindholm/"]
 	pushInsteadOf = "https://github.com/simonlindholm/"

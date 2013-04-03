@@ -35,13 +35,19 @@ if has("autocmd")
 	" Save things on lost focus
 	au FocusLost silent! :wa
 
+	" Reload .vimrc when it's saved
+	au BufWritePost .vimrc so ~/.vimrc
+
     au BufRead,BufNewFile /home/lars/simon/programming/firebug/* setlocal expandtab
 endif
+
+highlight clear SignColumn
 
 
 set showcmd         " Show (partial) command in status line.
 set ignorecase      " Do case insensitive matching
 set smartcase       " Do smart case matching
+set wildignorecase  " Ignore case even for file names
 set incsearch       " Incremental search
 set autowrite       " Automatically save before commands like :next and :make
 "set hidden         " Keep hidden buffers alive
@@ -75,6 +81,9 @@ set softtabstop=4
 set wildmenu
 set wildmode=longest:full
 
+" Ignore some binary things in completion
+set wildignore=.svn,CVS,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam
+
 " Make it possible to save even with forgotten sudo
 cmap w!! w !sudo tee % >/dev/null
 
@@ -93,6 +102,9 @@ set noswapfile
 inoremap jk <Esc>
 inoremap kj <Esc>
 
+nnoremap j gj
+nnoremap k gk
+
 " Removed for being annoying
 "inoremap jkj j<Esc>
 "inoremap kjk k<Esc>
@@ -104,7 +116,13 @@ inoremap <F1> <Esc>
 nnoremap <F2> :Gstatus<cr>
 
 " Map ; to :, because : is used more
-map ; :
+noremap ; :
+
+" Swedish, sometimes convenient
+noremap ö :
+noremap ¤ $
+noremap ½ ~
+noremap § `
 
 " Let ;; be the new ;, if I ever need it
 noremap ;; ;
@@ -147,8 +165,15 @@ function! s:MyValaSettings()
 	setlocal syntax=vala
 endfunction
 
+" Go support
+let go_highlight_trailing_whitespace_error=0
+
 " let mapleader = ","
 
 nnoremap <leader>w :w<cr>
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 
 noremap <c-c> "+y
+
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
