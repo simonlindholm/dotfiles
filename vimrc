@@ -25,8 +25,13 @@ if has("autocmd")
 	au BufNewFile,BufRead * setlocal formatoptions-=o | setlocal formatoptions-=r
 
 	" Vala support
-	au BufRead,BufNewFile *.vala call s:MyValaSettings()
-	au BufRead,BufNewFile *.vapi call s:MyValaSettings()
+	function! s:ValaSettings()
+		setfiletype java
+		setlocal efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
+		setlocal syntax=vala
+	endfunction
+	au BufRead,BufNewFile *.vala call s:ValaSettings()
+	au BufRead,BufNewFile *.vapi call s:ValaSettings()
 
 	" ActionScript, Flex
 	au BufRead,BufNewFile *.as set syntax=javascript | set cindent
@@ -123,8 +128,9 @@ noremap ö :
 noremap ¤ $
 noremap ½ ~
 noremap § `
+noremap - /
 
-" Let ;; be the new ;, if I ever need it
+" Let ;; be the new ;, should I ever need it
 noremap ;; ;
 
 " Lower the timeout for prefix keymaps (jkj should be j<esc>, and try to
@@ -154,16 +160,13 @@ nnoremap <c-p> <c-i>
 " I make this mistake a lot
 noremap <S-k> k
 
+" paste lines from unnamed register and fix indentation
+noremap <leader>p pV`]=
+noremap <leader>P PV`]=
+
 " XML indentation - I might use this some time.
 vmap ,px !xmllint --format -<CR>
 nmap ,px !!xmllint --format -<CR>
-
-" Vala support
-function! s:MyValaSettings()
-	setfiletype java
-	setlocal efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
-	setlocal syntax=vala
-endfunction
 
 " Go support
 let go_highlight_trailing_whitespace_error=0
@@ -177,3 +180,8 @@ noremap <c-c> "+y
 
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
+
+" & highlights the word under the cursor
+noremap & :let @/ = "<c-r><c-w>"<cr>:set hlsearch<cr><c-l>
+
+set showbreak=↳\ " (a single space)
