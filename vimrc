@@ -40,9 +40,6 @@ if has("autocmd")
 	" Save things on lost focus
 	au FocusLost silent! :wa
 
-	" Reload .vimrc when it's saved
-	au BufWritePost .vimrc so ~/.vimrc
-
     au BufRead,BufNewFile /home/lars/simon/programming/firebug/* setlocal expandtab
 endif
 
@@ -66,6 +63,7 @@ set hlsearch
 
 " <Ctrl-l> also removes any search highlighting.
 nnoremap <silent> <C-l> :nohl<CR><C-l>
+imap <c-l> <c-o><c-l>
 
 " Provide some space above/below the current line
 set scrolloff=2
@@ -109,10 +107,6 @@ inoremap kj <Esc>
 
 nnoremap j gj
 nnoremap k gk
-
-" Removed for being annoying
-"inoremap jkj j<Esc>
-"inoremap kjk k<Esc>
 
 " <F1> is probably mistyped <Esc>, and is also never used.
 nnoremap <F1> <Esc>
@@ -185,3 +179,18 @@ cnoremap <C-e> <End>
 noremap & :let @/ = "<c-r><c-w>"<cr>:set hlsearch<cr><c-l>
 
 set showbreak=↳\ " (a single space)
+
+" Display incomplete lines instead of a bunch of @
+set display=lastline
+
+" No vim intro
+set shm+=I
+
+" Ignore whitespace with vimdiff
+set diffopt=filler,iwhite
+
+" Don't indent "public:", "case X:", or return type declarations
+set cinoptions=g0:0t0
+
+" List the number of substitutions for :s etc. when it's > 1
+set report=1
