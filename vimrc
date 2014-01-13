@@ -12,36 +12,45 @@ let g:clang_hl_errors=1
 let g:clang_complete_auto=0
 "let g:clang_complete_copen=1
 let g:clang_periodic_quickfix=0
-autocmd Filetype c,objc,cpp autocmd BufWritePre <buffer> :call g:ClangUpdateQuickFix()
+
+" Gitgutter options
+"set updatetime=750
+let g:gitgutter_diff_args = '-w'
+let g:gitgutter_eager = 0
+let g:gitgutter_realtime = 0
 
 let b:surround_indent = 1
-call pathogen#infect()
+silent! call pathogen#infect()
 
-if has("autocmd")
-	" Load indentation rules and plugins according to filetype.
-	filetype plugin indent on
+" Load indentation rules and plugins according to filetype.
+filetype plugin indent on
 
-	" Don't continue comments over several lines.
-	au BufNewFile,BufRead * setlocal formatoptions-=o | setlocal formatoptions-=r
-
-	" Vala support
-	function! s:ValaSettings()
-		setfiletype java
-		setlocal efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
-		setlocal syntax=vala
-	endfunction
-	au BufRead,BufNewFile *.vala call s:ValaSettings()
-	au BufRead,BufNewFile *.vapi call s:ValaSettings()
-
-	" ActionScript, Flex
-	au BufRead,BufNewFile *.as set syntax=javascript | set cindent
-	au BufRead,BufNewFile *.mxml set filetype=xml
-
-	" Save things on lost focus
-	au FocusLost silent! :wa
-
-    au BufRead,BufNewFile /home/lars/simon/programming/firebug/* setlocal expandtab
+" Clang again, but only if the plugin is installed
+if exists("*pathogen#infect")
+	au Filetype c,objc,cpp autocmd BufWritePre <buffer> :call g:ClangUpdateQuickFix()
 endif
+
+" Don't continue comments over several lines.
+au BufNewFile,BufRead * setlocal formatoptions-=o | setlocal formatoptions-=r
+
+" Vala support
+function! s:ValaSettings()
+	setfiletype java
+	setlocal efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
+	setlocal syntax=vala
+endfunction
+au BufRead,BufNewFile *.vala call s:ValaSettings()
+au BufRead,BufNewFile *.vapi call s:ValaSettings()
+
+" ActionScript, Flex
+au BufRead,BufNewFile *.as set syntax=javascript | set cindent
+au BufRead,BufNewFile *.mxml set filetype=xml
+
+" Save things on lost focus
+au FocusLost silent! :wa
+
+au BufRead,BufNewFile */firebug/* setlocal expandtab
+au BufRead,BufNewFile *.hs setlocal expandtab
 
 highlight clear SignColumn
 
@@ -73,6 +82,9 @@ set shiftwidth=4
 set tabstop=4
 set softtabstop=4
 
+" Round indentation to a multiple of 4 with >> and <<
+set shiftround
+
 " Remove this - it is very annoying at times when the indentation level
 "  gets set to some ridiculous number of spaces.
 " " Automatically find indentation style
@@ -85,7 +97,7 @@ set wildmenu
 set wildmode=longest:full
 
 " Ignore some binary things in completion
-set wildignore=.svn,CVS,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam
+set wildignore=.svn,CVS,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam,*.hi
 
 " Make it possible to save even with forgotten sudo
 cmap w!! w !sudo tee % >/dev/null
