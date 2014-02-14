@@ -244,3 +244,14 @@ function _jump {
 }
 complete -o default -o nospace -F _jump j
 
+# Map "," to "git " at the beginning of line
+function commaToGit {
+	if [[ $READLINE_POINT == "0" ]]; then
+		READLINE_LINE="git $READLINE_LINE"
+		READLINE_POINT=4
+	else
+		READLINE_LINE=${READLINE_LINE:0:$READLINE_POINT},${READLINE_LINE:$READLINE_POINT}
+		let READLINE_POINT++
+	fi
+}
+bind -x '",":commaToGit'
