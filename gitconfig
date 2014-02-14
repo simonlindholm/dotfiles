@@ -29,11 +29,15 @@
 	br = branch
 	la = log --pretty=\"format:%ad %h (%an): %s\" --date=short
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	lgb = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative --simplify-by-decoration
 	bl = gui blame
 	mdiff = difftool --no-prompt -t meld
 	dif = diff
 	hsow = show
 	d = diff --patience
+	rh = reset --hard
+	rh0 = reset --hard HEAD
+	rh1 = reset --hard HEAD~
 	showw = show HEAD~
 	showww = show HEAD~2
 	showwww = show HEAD~3
