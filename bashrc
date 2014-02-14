@@ -195,6 +195,9 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LESS="-i"
 
+# Colorize gcc output with 4.9 or later
+export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
+
 # Allow Ctrl+S, Ctrl+Q
 stty start undef
 stty stop undef
