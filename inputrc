@@ -1,0 +1,17 @@
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-char
+"\e[D": backward-char
+"[1;5C": forward-word
+"[1;5D": backward-word
+
+# Per https://news.ycombinator.com/item?id=7051091
+# set editing-mode vi
+# $if mode=vi
+  # set keymap vi-command
+  # "gg": beginning-of-history
+  # "G": end-of-history
+  # set keymap vi-insert
+  # "jk": vi-movement-mode
+  # "kj": vi-movement-mode
+  # "\C-p": history-search-backward
