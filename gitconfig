@@ -51,3 +51,10 @@
 	showwwwwwwwwwww = show HEAD~11
 [url "git@github.com:simonlindholm/"]
 	pushInsteadOf = "https://github.com/simonlindholm/"
+[pager]
+	# diff-highlight, from /usr/share/doc/git/contrib/diff-highlight, with HIGHLIGHT="\x1b[1m", UNHIGHLIGHT="\x1b[22m".
+	diff = diff-highlight | less
+	show = diff-highlight | less
+	log = diff-highlight | less
+[core]
+	excludesfile = ~/.gitignore
