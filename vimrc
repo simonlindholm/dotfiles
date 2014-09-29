@@ -1,7 +1,5 @@
 " Jump to the last position when reopening a file
-"if has("autocmd")
-"	au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-"endif
+" au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Clang auto-completion
 set completeopt=menu
@@ -26,7 +24,7 @@ silent! call pathogen#infect()
 filetype plugin indent on
 
 " Clang again, but only if the plugin is installed
-if exists("*pathogen#infect")
+if exists("g:ClangUpdateQuickFix")
 	au Filetype c,objc,cpp autocmd BufWritePre <buffer> :call g:ClangUpdateQuickFix()
 endif
 
@@ -51,6 +49,7 @@ au FocusLost silent! :wa
 
 au BufRead,BufNewFile */firebug/* setlocal expandtab
 au BufRead,BufNewFile *.hs setlocal expandtab
+au BufNewFile,BufReadPost *.md set filetype=markdown
 
 highlight clear SignColumn
 
@@ -101,6 +100,7 @@ set wildignore=.svn,CVS,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*
 
 " Make it possible to save even with forgotten sudo
 cmap w!! w !sudo tee % >/dev/null
+cmap W!! w !sudo tee % >/dev/null
 
 " Nicer highlighting color for matching parens
 highlight MatchParen ctermbg=0
@@ -126,22 +126,22 @@ inoremap <F1> <Esc>
 
 nnoremap <F2> :Gstatus<cr>
 
+noremap <silent> <F3> :make %<<cr>:cw<cr>
+
 " Map ; to :, because : is used more
 noremap ; :
 
 " Swedish, sometimes convenient
 noremap ö :
+noremap Ö :
 noremap ¤ $
 noremap ½ ~
 noremap § `
 noremap - /
 
-" Let ;; be the new ;, should I ever need it
-noremap ;; ;
-
 " Lower the timeout for prefix keymaps (jkj should be j<esc>, and try to
 " avoid lag for the cursor).
-set timeoutlen=300
+set timeoutlen=200
 
 " Ctrl-j/k inserts blank line below/above.
 nnoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
@@ -170,6 +170,10 @@ noremap <S-k> k
 noremap <leader>p pV`]=
 noremap <leader>P PV`]=
 
+" paste from yank register
+noremap yp "0p
+noremap yP "0P
+
 " XML indentation - I might use this some time.
 vmap ,px !xmllint --format -<CR>
 nmap ,px !!xmllint --format -<CR>
@@ -179,6 +183,7 @@ let go_highlight_trailing_whitespace_error=0
 
 " let mapleader = ","
 
+nnoremap <leader>q :q<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 
@@ -188,7 +193,7 @@ cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 
 " & highlights the word under the cursor
-noremap & :let @/ = "<c-r><c-w>"<cr>:set hlsearch<cr><c-l>
+noremap <silent> & :let @/ = "\\<<c-r><c-w>\\>"<cr>:set hlsearch<cr>
 
 set showbreak=↳\ " (a single space)
 
@@ -206,3 +211,9 @@ set cinoptions=g0:0t0
 
 " List the number of substitutions for :s etc. when it's > 1
 set report=1
+
+cabbrev te tabe
+
+" no-brainer limit increases
+set tabpagemax=50
+set undolevels=10000
