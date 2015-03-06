@@ -1,5 +1,7 @@
-"\e[A": history-search-backward
-"\e[B": history-search-forward
+$if Bash
+	"\e[A": history-search-backward
+	"\e[B": history-search-forward
+$endif
 "\e[C": forward-char
 "\e[D": backward-char
 "[1;5C": forward-word
