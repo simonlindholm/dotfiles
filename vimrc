@@ -171,12 +171,12 @@ noremap <leader>p pV`]=
 noremap <leader>P PV`]=
 
 " paste from yank register
-noremap yp "0p
-noremap yP "0P
+"noremap yp "0p
+"noremap yP "0P
 
 " XML indentation - I might use this some time.
-vmap ,px !xmllint --format -<CR>
-nmap ,px !!xmllint --format -<CR>
+"vmap ,px !xmllint --format -<CR>
+"nmap ,px !!xmllint --format -<CR>
 
 " Go support
 let go_highlight_trailing_whitespace_error=0
