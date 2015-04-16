@@ -40,14 +40,17 @@ endfunction
 au BufRead,BufNewFile *.vala call s:ValaSettings()
 au BufRead,BufNewFile *.vapi call s:ValaSettings()
 
-" ActionScript, Flex
-au BufRead,BufNewFile *.as set syntax=javascript | set cindent
+" ActionScript, Mozilla JavaScript, Flex
+au BufRead,BufNewFile *.as set syntax=javascript cindent
+au BufNewFile,BufRead *.jsm set syntax=javascript cindent
 au BufRead,BufNewFile *.mxml set filetype=xml
 
 " Save things on lost focus
 au FocusLost silent! :wa
 
 au BufRead,BufNewFile */firebug/* setlocal expandtab
+au BufRead,BufNewFile *.scala setlocal expandtab sw=2 ts=2 sts=2
+au BufRead,BufNewFile *.tex setlocal expandtab sw=2 ts=2 sts=2
 au BufRead,BufNewFile *.hs setlocal expandtab
 au BufNewFile,BufReadPost *.md set filetype=markdown
 
