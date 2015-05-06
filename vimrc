@@ -17,6 +17,12 @@ let g:gitgutter_diff_args = '-w'
 let g:gitgutter_eager = 0
 let g:gitgutter_realtime = 0
 
+" Go support
+let go_highlight_trailing_whitespace_error=0
+
+" Don't indent "public:", "case X:", or return type declarations
+set cinoptions=g0:0t0
+
 let b:surround_indent = 1
 silent! call pathogen#infect()
 
@@ -28,10 +34,12 @@ if exists("g:ClangUpdateQuickFix")
 	au Filetype c,objc,cpp autocmd BufWritePre <buffer> :call g:ClangUpdateQuickFix()
 endif
 
-" Don't continue comments over several lines.
-au BufNewFile,BufRead * setlocal formatoptions-=o | setlocal formatoptions-=r
+" Save things on lost focus
+au FocusLost silent! :wa
 
-" Vala support
+" Don't continue comments over several lines.
+au BufRead,BufNewFile * setlocal formatoptions-=o | setlocal formatoptions-=r
+
 function! s:ValaSettings()
 	setfiletype java
 	setlocal efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
@@ -39,20 +47,17 @@ function! s:ValaSettings()
 endfunction
 au BufRead,BufNewFile *.vala call s:ValaSettings()
 au BufRead,BufNewFile *.vapi call s:ValaSettings()
-
-" ActionScript, Mozilla JavaScript, Flex
 au BufRead,BufNewFile *.as set syntax=javascript cindent
-au BufNewFile,BufRead *.jsm set syntax=javascript cindent
+au BufRead,BufNewFile *.jsm set syntax=javascript cindent
 au BufRead,BufNewFile *.mxml set filetype=xml
+au BufRead,BufNewFile *.md set filetype=markdown
+au BufRead,BufNewFile *.scala setlocal et sw=2 ts=2 sts=2
+au BufRead,BufNewFile *.tex setlocal et sw=2 ts=2 sts=2
+au BufRead,BufNewFile *.hs setlocal et
 
-" Save things on lost focus
-au FocusLost silent! :wa
-
-au BufRead,BufNewFile */firebug/* setlocal expandtab
-au BufRead,BufNewFile *.scala setlocal expandtab sw=2 ts=2 sts=2
-au BufRead,BufNewFile *.tex setlocal expandtab sw=2 ts=2 sts=2
-au BufRead,BufNewFile *.hs setlocal expandtab
-au BufNewFile,BufReadPost *.md set filetype=markdown
+" Local overrides
+au BufRead,BufNewFile */mozilla-central/* setlocal et sw=2 ts=2 sts=2
+" (etc.)
 
 highlight clear SignColumn
 
@@ -180,9 +185,6 @@ noremap <leader>P PV`]=
 "vmap ,px !xmllint --format -<CR>
 "nmap ,px !!xmllint --format -<CR>
 
-" Go support
-let go_highlight_trailing_whitespace_error=0
-
 " let mapleader = ","
 
 nnoremap <leader>q :q<cr>
@@ -207,9 +209,6 @@ set shm+=I
 
 " Ignore whitespace with vimdiff
 set diffopt=filler,iwhite
-
-" Don't indent "public:", "case X:", or return type declarations
-set cinoptions=g0:0t0
 
 " List the number of substitutions for :s etc. when it's > 1
 set report=1
