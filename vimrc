@@ -102,8 +102,7 @@ set wildmode=longest:full
 set wildignore=.svn,CVS,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam,*.hi
 
 " Make it possible to save even with forgotten sudo
-cmap w!! w !sudo tee % >/dev/null
-cmap W!! w !sudo tee % >/dev/null
+cabbrev w!! w !sudo tee % >/dev/null
 
 " Nicer highlighting color for matching parens
 highlight MatchParen ctermbg=0
