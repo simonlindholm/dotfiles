@@ -34,9 +34,6 @@ if exists("g:ClangUpdateQuickFix")
 	au Filetype c,objc,cpp autocmd BufWritePre <buffer> :call g:ClangUpdateQuickFix()
 endif
 
-" Save things on lost focus
-au FocusLost silent! :wa
-
 " Don't continue comments over several lines.
 au BufRead,BufNewFile * setlocal formatoptions-=o | setlocal formatoptions-=r
 
@@ -59,6 +56,11 @@ au BufRead,BufNewFile *.hs setlocal et
 au BufRead,BufNewFile */mozilla-central/* setlocal et sw=2 ts=2 sts=2
 " (etc.)
 
+" Highlight en spaces, em spaces, non-breaking spaces and soft hyphens with
+" a strong red color.
+au BufNewFile,BufReadPost * match ExtraWhitespace /[   ­]/
+
+highlight ExtraWhitespace ctermbg=red guibg=red
 highlight clear SignColumn
 
 
@@ -104,7 +106,7 @@ set wildmenu
 set wildmode=longest:full
 
 " Ignore some binary things in completion
-set wildignore=.svn,CVS,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam,*.hi
+set wildignore=.svn,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam,*.hi
 
 " Make it possible to save even with forgotten sudo
 cabbrev w!! w !sudo tee % >/dev/null
@@ -218,3 +220,6 @@ cabbrev te tabe
 " no-brainer limit increases
 set tabpagemax=50
 set undolevels=10000
+
+" Smoother redrawing with no downside, apparently.
+set ttyfast
