@@ -73,6 +73,8 @@ set autowrite       " Automatically save before commands like :next and :make
 "set hidden         " Keep hidden buffers alive
 "set mouse=a        " Enable mouse usage (all modes)
 
+set modeline
+
 " Use the *correct* charset.
 set encoding=utf-8
 
@@ -143,10 +145,17 @@ noremap ; :
 " Swedish, sometimes convenient
 noremap ö :
 noremap Ö :
+noremap ä '
+noremap Ä "
+noremap å [
+noremap Å {
 noremap ¤ $
 noremap ½ ~
 noremap § `
 noremap - /
+noremap! ¤ $
+noremap! ½ ~
+noremap! § `
 
 " Lower the timeout for prefix keymaps (jkj should be j<esc>, and try to
 " avoid lag for the cursor).
