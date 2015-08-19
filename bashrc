@@ -97,11 +97,14 @@ if [ -x /usr/bin/dircolors ]; then
 	#alias dir='dir --color=auto'
 	#alias vdir='vdir --color=auto'
 
-	#alias grep='grep --color=auto'
-	#alias fgrep='fgrep --color=auto'
-	#alias egrep='egrep --color=auto'
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
 fi
 
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -134,28 +137,13 @@ function z() {
 	LSB=`mktemp`
 	/bin/ls >$LSB
 	D=`diff $LSA $LSB --unchanged-line-format=`
-	if [[ $D != '' ]]; then cd "$D" 2>/dev/null; rm "../$1"; fi
+	if [[ $D != '' ]]; then cd "$D" 2>/dev/null && rm "../$1"; fi
 	rm $LSA $LSB
 }
 
 function zk() {
 	# z, keep
 	/usr/bin/file-roller --extract-here "$@"
-}
-
-function printpathvar() {
-	eval value=\"\$$1\"
-	echo "$value" | tr ':' '\n'
-	unset value
-}
-
-function editpathvar() {
-	local tmp=`mktemp`
-	echo "Outputting to $tmp..."
-	printpathvar $1 > $tmp
-	$EDITOR $tmp
-	export $1=`cat $tmp | tr '\n' ':'`
-	rm $tmp
 }
 
 function ff() {
@@ -187,13 +175,19 @@ mani() {
 
 # Whoo git!
 GIT_PS1_SHOWDIRTYSTATE=1
-PS1='\u@\h:\w`__git_ps1`\$ '
+function __git_ps1_local() {
+	if [[ `pwd` == /home/simon/code/* || `pwd` == /home/simon/skola/* ]]
+	then
+		__git_ps1
+	fi
+}
+PS1='\[\e]0;\w\a\]\u@\h:\w`__git_ps1_local`\$ '
 
 export GREP_OPTIONS='--exclude=*.swp --exclude=*.svn-base'
 export LANGUAGE=en
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-export LESS="-i"
+export LESS="-Ri"
 
 # Colorize gcc output with 4.9 or later
 export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
@@ -206,15 +200,11 @@ alias pg='pgrep -fl'
 alias h="history | grep"
 alias ll='ls -l'
 alias la='ls -A'
-alias l='ls'
-alias g='git'
 alias n='nice -n'
 alias rmb='/bin/rm *~'
 alias open='xdg-open'
-alias c='g++ -Wall -g -ftrapv -Wconversion -D_GLIBCXX_DEBUG -D_GLIBC_DEBUG -std=c++0x'
+alias c='g++ -Wall -g -fsanitize=undefined -Wconversion -D_GLIBCXX_DEBUG -std=c++11'
 alias make='make -j2'
-alias waf='./waf'
-alias svnd='svn diff | dless'
 alias ap='sudo apt-get'
 function apc() {
 	apt-cache "$@" | less
@@ -222,6 +212,7 @@ function apc() {
 
 
 # ulimit -v 700000
+ulimit -s unlimited
 
 # no idea why this seems to be needed in 20% of cases
 if [[ `pwd` == / ]]; then cd; fi
@@ -249,7 +240,7 @@ function _jump {
 }
 complete -o default -o nospace -F _jump j
 
-# Map "," to "git " at the beginning of line
+# Map "," to "git " at the beginning of line (for interactive shells)
 function commaToGit {
 	if [[ $READLINE_POINT == "0" ]]; then
 		READLINE_LINE="git $READLINE_LINE"
@@ -259,4 +250,16 @@ function commaToGit {
 		let READLINE_POINT++
 	fi
 }
-bind -x '",":commaToGit'
+if [[ -t 1 ]]; then bind -x '",":commaToGit'; fi
+
+function pdfl {
+	pdflatex -file-line-error </dev/null "$@" | grep '^\./\|^!'
+}
+
+export EDITOR=/usr/bin/vim
+export PYTHONSTARTUP=~/.pythonrc
+
+#export PATH="$HOME/code/git-cinnabar:$PATH"
+# (etc.)
+
+export HISTTIMEFORMAT="%d/%m/%y %T "
