@@ -3,7 +3,10 @@
 # for examples
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+case $- in
+	*i*) ;;
+	  *) return;;
+esac
 
 # Move the gnome-terminal window to the top-left corner. Sadly done for each
 # tab, but I can't find a way around that.
@@ -12,13 +15,11 @@
 	# unset gnterm
 # fi
 
-# don't put duplicate lines in the history, and skip lines starting with space
-export HISTCONTROL=ignoreboth
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
 
 HISTIGNORE='sudo poweroff '
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=5000
 
 # Reverse search on up/down (in inputrc)
 # bind '"\e[A": history-search-backward'
@@ -33,6 +34,10 @@ HISTSIZE=5000
 # append to the history file, don't overwrite it
 shopt -s histappend
 
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=5000
+HISTFILESIZE=10000
+
 # Recursive globbing with **
 shopt -s globstar
 
@@ -44,13 +49,13 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+	debian_chroot=$(cat /etc/debian_chroot)
 fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+	xterm-color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -59,31 +64,43 @@ esac
 #force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
+		color_prompt=yes
+	else
+		color_prompt=
+	fi
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+	PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
+	PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+	;;
 *)
-    ;;
+	;;
 esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	alias ls='ls --color=auto'
+	#alias dir='dir --color=auto'
+	#alias vdir='vdir --color=auto'
+
+	#alias grep='grep --color=auto'
+	#alias fgrep='fgrep --color=auto'
+	#alias egrep='egrep --color=auto'
+fi
 
 
 # Alias definitions.
@@ -91,40 +108,30 @@ esac
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-#if [ -f ~/.bash_aliases ]; then
-#    . ~/.bash_aliases
-#fi
-
-# enable color support of ls
-if [ -x /usr/bin/dircolors ]; then
-    eval "`dircolors -b`"
-    alias ls='ls --color=auto -B'
-
-    #alias grep='grep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-    #alias egrep='egrep --color=auto'
+if [ -f ~/.bash_aliases ]; then
+	. ~/.bash_aliases
 fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+	. /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+	. /etc/bash_completion
+  fi
 fi
 
 function mkcd() {
 	[ -n "$1" ] && mkdir -p "$@" && cd "$1"
 }
 
-function apc() {
-	apt-cache "$@" | less
-}
-
 function z() {
 	LSA=`mktemp`
-	LSB=`mktemp`
 	/bin/ls >$LSA
 	/usr/bin/file-roller --extract-here "$@" || (rm $LSA && exit 1)
+	LSB=`mktemp`
 	/bin/ls >$LSB
 	D=`diff $LSA $LSB --unchanged-line-format=`
 	if [[ $D != '' ]]; then cd "$D" 2>/dev/null; rm "../$1"; fi
@@ -133,14 +140,7 @@ function z() {
 
 function zk() {
 	# z, keep
-	local LSA=`mktemp`
-	local LSB=`mktemp`
-	/bin/ls >$LSA
-	/usr/bin/file-roller --extract-here "$@" || (rm $LSA && exit 1)
-	/bin/ls >$LSB
-	local D=`diff $LSA $LSB --unchanged-line-format=`
-	if [[ $D != '' ]]; then cd "$D" 2>/dev/null; fi
-	rm $LSA $LSB
+	/usr/bin/file-roller --extract-here "$@"
 }
 
 function printpathvar() {
@@ -215,6 +215,11 @@ alias c='g++ -Wall -g -ftrapv -Wconversion -D_GLIBCXX_DEBUG -D_GLIBC_DEBUG -std=
 alias make='make -j2'
 alias waf='./waf'
 alias svnd='svn diff | dless'
+alias ap='sudo apt-get'
+function apc() {
+	apt-cache "$@" | less
+}
+
 
 # ulimit -v 700000
 
@@ -225,16 +230,16 @@ if [[ `pwd` == / ]]; then cd; fi
 # http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html
 export MARKPATH=$HOME/.marks
 function j {
-    cd -P $MARKPATH/$1 2>/dev/null || echo "No such mark: $1"
+	cd -P $MARKPATH/$1 2>/dev/null || echo "No such mark: $1"
 }
 function mark {
-    mkdir -p $MARKPATH; ln -s $(pwd) $MARKPATH/$1
+	mkdir -p $MARKPATH; ln -s $(pwd) $MARKPATH/$1
 }
 function unmark {
-    rm -i $MARKPATH/$1
+	rm -i $MARKPATH/$1
 }
 function marks {
-    ls -l $MARKPATH | sed 's/  / /g' | cut -d' ' -f9- | sed 's/ -/\t-/g' && echo
+	ls -l $MARKPATH | sed 's/  / /g' | cut -d' ' -f9- | sed 's/ -/\t-/g' && echo
 }
 function _jump {
 	local cur=${COMP_WORDS[COMP_CWORD]}
