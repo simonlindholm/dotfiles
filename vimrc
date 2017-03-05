@@ -34,6 +34,9 @@ if exists("g:ClangUpdateQuickFix")
 	au Filetype c,objc,cpp autocmd BufWritePre <buffer> :call g:ClangUpdateQuickFix()
 endif
 
+" Joining comments
+set formatoptions+=j
+
 " Don't continue comments over several lines.
 au BufRead,BufNewFile * setlocal formatoptions-=o | setlocal formatoptions-=r
 
@@ -59,10 +62,8 @@ au BufRead,BufNewFile */mozilla-central/* setlocal et sw=2 ts=2 sts=2
 " Highlight en spaces, em spaces, non-breaking spaces and soft hyphens with
 " a strong red color.
 au BufNewFile,BufReadPost * match ExtraWhitespace /[   ­]/
-
 highlight ExtraWhitespace ctermbg=red guibg=red
 highlight clear SignColumn
-
 
 set showcmd         " Show (partial) command in status line.
 set ignorecase      " Do case insensitive matching
@@ -70,8 +71,7 @@ set smartcase       " Do smart case matching
 set wildignorecase  " Ignore case even for file names
 set incsearch       " Incremental search
 set autowrite       " Automatically save before commands like :next and :make
-"set hidden         " Keep hidden buffers alive
-"set mouse=a        " Enable mouse usage (all modes)
+set autoread        " Reload externally changed files
 
 set modeline
 
@@ -87,8 +87,10 @@ imap <c-l> <c-o><c-l>
 
 " Provide some space above/below the current line
 set scrolloff=2
+set sidescrolloff=5
 
 " Indentation with 4-space tabs per default
+set smarttab
 set shiftwidth=4
 set tabstop=4
 set softtabstop=4
@@ -119,6 +121,7 @@ highlight MatchParen ctermbg=0
 
 " Automatically change to the containing directory when opening a file
 set autochdir
+if expand("%") != "" | cd %:h | endif " workaround for https://github.com/vim/vim/issues/704, fixed in 7.4.1716
 
 " Swapfiles/backups are more annoying than helpful
 set nobackup
@@ -200,7 +203,10 @@ noremap <leader>P PV`]=
 
 nnoremap <leader>q :q<cr>
 nnoremap <leader>w :w<cr>
-nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
+nnoremap <leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
+
+nnoremap <leader>d :set bg=dark<cr>
+nnoremap <leader>f :set bg=light<cr>
 
 noremap <c-c> "+y
 
@@ -232,3 +238,5 @@ set undolevels=10000
 
 " Smoother redrawing with no downside, apparently.
 set ttyfast
+
+set nrformats-=octal
