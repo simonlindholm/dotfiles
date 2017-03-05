@@ -1,16 +1,6 @@
 " Jump to the last position when reopening a file
 " au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-" Clang auto-completion
-set completeopt=menu
-let g:clang_use_library=1
-let g:clang_library_path='/usr/lib'
-let g:clang_auto_select=1
-let g:clang_hl_errors=1
-let g:clang_complete_auto=0
-"let g:clang_complete_copen=1
-let g:clang_periodic_quickfix=0
-
 " Gitgutter options
 "set updatetime=750
 let g:gitgutter_diff_args = '-w'
@@ -20,19 +10,20 @@ let g:gitgutter_realtime = 0
 " Go support
 let go_highlight_trailing_whitespace_error=0
 
-" Don't indent "public:", "case X:", or return type declarations
-set cinoptions=g0:0t0
-
 let b:surround_indent = 1
 silent! call pathogen#infect()
 
 " Load indentation rules and plugins according to filetype.
 filetype plugin indent on
 
-" Clang again, but only if the plugin is installed
-if exists("g:ClangUpdateQuickFix")
-	au Filetype c,objc,cpp autocmd BufWritePre <buffer> :call g:ClangUpdateQuickFix()
-endif
+" Probably the most controversial part: remap jk, kj to escape. Requires a
+" short timeoutlen to avoid jkj resulting in <esc>j, among other problems.
+inoremap jk <Esc>
+inoremap kj <Esc>
+set timeoutlen=200
+
+" Optionally:
+" set nu expandtab
 
 " Joining comments
 set formatoptions+=j
@@ -127,10 +118,6 @@ if expand("%") != "" | cd %:h | endif " workaround for https://github.com/vim/vi
 set nobackup
 set noswapfile
 
-" Remap jk, kj to escape, since they are not used anyway
-inoremap jk <Esc>
-inoremap kj <Esc>
-
 nnoremap j gj
 nnoremap k gk
 
@@ -160,19 +147,9 @@ noremap! ¤ $
 noremap! ½ ~
 noremap! § `
 
-" Lower the timeout for prefix keymaps (jkj should be j<esc>, and try to
-" avoid lag for the cursor).
-set timeoutlen=200
-
 " Ctrl-j/k inserts blank line below/above.
 nnoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
 nnoremap <silent><C-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
-
-" For using Swedish keyboard layout as if it were English:
-" :set langmap=å[,ä',ö:,Å{,Ä\",Ö:,¨],^},'\\\\,*\|,\\;<,:>,-/,_?,½~
-"               ,\"@,¤$,&^,/&,(*,)(,=),?_,`+,+-,´=,§`
-" Does unfortunately not work very well with key mapping, and Swedish delayed
-" keys are still there for, for example, } and ~.
 
 " Make replaying simples macros recorded with qq easier
 nnoremap Q @q
@@ -194,10 +171,6 @@ noremap <leader>P PV`]=
 " paste from yank register
 "noremap yp "0p
 "noremap yP "0P
-
-" XML indentation - I might use this some time.
-"vmap ,px !xmllint --format -<CR>
-"nmap ,px !!xmllint --format -<CR>
 
 " let mapleader = ","
 
@@ -239,4 +212,8 @@ set undolevels=10000
 " Smoother redrawing with no downside, apparently.
 set ttyfast
 
+" Don't indent "public:", "case X:", or return type declarations
+set cinoptions=g0:0t0
+
+" Don't use octal for Ctrl+A/Ctrl+X
 set nrformats-=octal
