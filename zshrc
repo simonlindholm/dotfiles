@@ -1,5 +1,5 @@
 function _commaToGit {
-	if [[ z$LBUFFER = z ]]; then
+	if [[ -z $LBUFFER ]]; then
 		LBUFFER='git '
 	else
 		zle self-insert
