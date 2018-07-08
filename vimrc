@@ -10,6 +10,9 @@ let g:gitgutter_realtime = 0
 " Go support
 let go_highlight_trailing_whitespace_error=0
 
+" Don't indent "public:", "case X:", or return type declarations
+set cinoptions=g0:0t0
+
 let b:surround_indent = 1
 silent! call pathogen#infect()
 
@@ -27,6 +30,7 @@ set timeoutlen=200
 
 " Joining comments
 set formatoptions+=j
+set nojoinspaces
 
 " Don't continue comments over several lines.
 au BufRead,BufNewFile * setlocal formatoptions-=o | setlocal formatoptions-=r
@@ -52,9 +56,15 @@ au BufRead,BufNewFile */mozilla-central/* setlocal et sw=2 ts=2 sts=2
 
 " Highlight en spaces, em spaces, non-breaking spaces and soft hyphens with
 " a strong red color.
-au BufNewFile,BufReadPost * match ExtraWhitespace /[   ­]/
+au BufNewFile,BufReadPost * match ExtraWhitespace /\(\%u2002\|\%u2003\|\%xa0\|\%xad\)/
 highlight ExtraWhitespace ctermbg=red guibg=red
 highlight clear SignColumn
+
+" Dark background by default
+set bg=dark " light
+if has("gui_running")
+	set bg=light
+endif
 
 set showcmd         " Show (partial) command in status line.
 set ignorecase      " Do case insensitive matching
@@ -127,18 +137,24 @@ inoremap <F1> <Esc>
 
 nnoremap <F2> :Gstatus<cr>
 
-noremap <silent> <F3> :make %<<cr>:cw<cr>
+nnoremap <silent> <F3> :make %<<cr>:cw<cr>
 
 " Map ; to :, because : is used more
 noremap ; :
 
+function EnglishLayout()
+	call system('gsettings set org.gnome.desktop.input-sources current 0')
+endfunction
+
 " Swedish, sometimes convenient
+" Å, Ä and å are generally mistakes and continued by other English-
+" language commands; thus, they swap keyboard layout back to English.
 noremap ö :
 noremap Ö :
 noremap ä '
-noremap Ä "
-noremap å [
-noremap Å {
+noremap <silent> Ä :call EnglishLayout()<CR>"
+noremap <silent> Å :call EnglishLayout()<CR>{
+noremap <silent> å :call EnglishLayout()<CR>[
 noremap ¤ $
 noremap ½ ~
 noremap § `
@@ -146,6 +162,20 @@ noremap - /
 noremap! ¤ $
 noremap! ½ ~
 noremap! § `
+
+" For using Swedish keyboard layout as if it were English:
+" :set langmap=å[,ä',ö:,Å{,Ä\",Ö:,¨],^},'\\\\,*\|,\\;<,:>,-/,_?,½~
+"               ,\"@,¤$,&^,/&,(*,)(,=),?_,`+,+-,´=,§`
+" Does unfortunately not work very well with key mapping, and Swedish delayed
+" keys are still there for, for example, } and ~.
+
+" Lower the timeout for prefix keymaps (jkj should be j<esc>, and try to
+" avoid lag for the cursor).
+au InsertEnter * set timeoutlen=100
+au InsertLeave * set timeoutlen=1000
+
+" Don't wait forever to cancel selections.
+set ttimeoutlen=50
 
 " Ctrl-j/k inserts blank line below/above.
 nnoremap <silent><C-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
@@ -181,10 +211,9 @@ nnoremap <leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 nnoremap <leader>d :set bg=dark<cr>
 nnoremap <leader>f :set bg=light<cr>
 
-noremap <c-c> "+y
-
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
+cnoremap <C-k> <c-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<cr>
 
 " & highlights the word under the cursor
 noremap <silent> & :let @/ = "\\<<c-r><c-w>\\>"<cr>:set hlsearch<cr>
@@ -212,8 +241,7 @@ set undolevels=10000
 " Smoother redrawing with no downside, apparently.
 set ttyfast
 
-" Don't indent "public:", "case X:", or return type declarations
-set cinoptions=g0:0t0
-
-" Don't use octal for Ctrl+A/Ctrl+X
 set nrformats-=octal
+
+set history=1000
+set viminfo+=:1000
