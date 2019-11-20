@@ -8,13 +8,6 @@ case $- in
 	  *) return;;
 esac
 
-# Move the gnome-terminal window to the top-left corner. Sadly done for each
-# tab, but I can't find a way around that.
-# if [ $gnterm = y ]; then
-	# wmctrl -e 0,0,0,-1,-1 -r ':ACTIVE:'
-	# unset gnterm
-# fi
-
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -34,9 +27,12 @@ HISTIGNORE='sudo poweroff '
 # append to the history file, don't overwrite it
 shopt -s histappend
 
+# save to file continuously, not just when exiting
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=5000
-HISTFILESIZE=10000
+HISTSIZE=200000
+HISTFILESIZE=400000
 
 # Recursive globbing with **
 shopt -s globstar
@@ -44,6 +40,9 @@ shopt -s globstar
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# case-sensitive []-globbing
+shopt -s globasciiranges
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -90,34 +89,16 @@ xterm*|rxvt*)
 	;;
 esac
 
-# enable color support of ls and also add handy aliases
+# Enable color support of ls and grep
 if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 	alias ls='ls --color=auto'
-	#alias dir='dir --color=auto'
-	#alias vdir='vdir --color=auto'
-
 	alias grep='grep --color=auto'
 	alias fgrep='fgrep --color=auto'
 	alias egrep='egrep --color=auto'
 fi
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-	. ~/.bash_aliases
-fi
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
+# Enable programmable completion features
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
 	. /usr/share/bash-completion/bash_completion
@@ -141,8 +122,7 @@ function z() {
 	rm $LSA $LSB
 }
 
-function zk() {
-	# z, keep
+function zk() { # z, keep
 	/usr/bin/file-roller --extract-here "$@"
 }
 
@@ -173,21 +153,23 @@ mani() {
 	info2man <(zcat $first_page $rest_page) | groff -man -Tutf8 | less
 }
 
-# Whoo git!
+# Uncolored prompt, with a git status indicator.
 GIT_PS1_SHOWDIRTYSTATE=1
 function __git_ps1_local() {
-	if [[ `pwd` == /home/simon/code/* || `pwd` == /home/simon/skola/* ]]
+	p=$(pwd)/
+	if [[ $p == /home/simon/code/* && $p != /home/simon/code/servo/* ]]
 	then
 		__git_ps1
 	fi
 }
 PS1='\[\e]0;\w\a\]\u@\h:\w`__git_ps1_local`\$ '
 
-export GREP_OPTIONS='--exclude=*.swp --exclude=*.svn-base'
+export GIT_COMPLETION_CHECKOUT_NO_GUESS=1
+
 export LANGUAGE=en
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-export LESS="-Ri"
+export LESS="-Ric"
 
 # Colorize gcc output with 4.9 or later
 export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
@@ -196,26 +178,35 @@ export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 stty start undef
 stty stop undef
 
+# Alias definitions.
+if [ -f ~/.bash_aliases ]; then
+	. ~/.bash_aliases
+fi
 alias pg='pgrep -fl'
 alias h="history | grep"
+alias rg='rg -M 300 --no-ignore-global'
 alias ll='ls -l'
 alias la='ls -A'
 alias n='nice -n'
 alias rmb='/bin/rm *~'
 alias open='xdg-open'
-alias c='g++ -Wall -g -fsanitize=undefined -Wconversion -D_GLIBCXX_DEBUG -std=c++11'
+alias c='g++-6 -Wall -Wfatal-errors -g -fsanitize=undefined,address -Wconversion -std=c++11 -DLOCAL -fconcepts' # -fno-sanitize-recover=all
+# alias c='clang++-6.0 -Wall -Wconversion -Wno-sign-conversion -Wfatal-errors -g -fsanitize=address,undefined -stdlib=libc++ -std=c++14 -include /usr/include/c++/v1/bits/stdc++.h' # -fno-sanitize-recover=all
+alias c2='g++ -Wall -Wfatal-errors -g -fsanitize=undefined -Wconversion -D_GLIBCXX_DEBUG -std=c++14'
+alias copt='g++ -Wall -Wconversion -Wno-sign-conversion -Wfatal-errors -g -std=c++14 -O2'
 alias make='make -j2'
 alias ap='sudo apt-get'
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"' # (e.g. sleep 10; alert)
+alias touchold='touch -t 200001010101'
 function apc() {
 	apt-cache "$@" | less
 }
 
 
+# breaks asan
 # ulimit -v 700000
-ulimit -s unlimited
-
-# no idea why this seems to be needed in 20% of cases
-if [[ `pwd` == / ]]; then cd; fi
+# breaks wine
+# ulimit -s 3000000
 
 
 # http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html
@@ -250,7 +241,15 @@ function commaToGit {
 		let READLINE_POINT++
 	fi
 }
-if [[ -t 1 ]]; then bind -x '",":commaToGit'; fi
+if [[ -t 1 ]]; then
+	bind -x '",":commaToGit'
+	bind '"\":" fg\n"'
+fi
+
+function paste() {
+	local file=${1:-/dev/stdin}
+	curl --data-binary @${file} https://paste.rs
+}
 
 function pdfl {
 	pdflatex -file-line-error </dev/null "$@" | grep '^\./\|^!'
@@ -259,6 +258,8 @@ function pdfl {
 export EDITOR=/usr/bin/vim
 export PYTHONSTARTUP=~/.pythonrc
 
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/bin"
 #export PATH="$HOME/code/git-cinnabar:$PATH"
 # (etc.)
 
