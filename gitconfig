@@ -6,6 +6,7 @@
 	diff = auto
 	pager = true
 [interactive]
+	# sudo apt install libterm-readkey-perl / cpan Term::ReadKey
 	singlekey = true
 [rebase]
 	autosquash = true
@@ -34,6 +35,7 @@
 	mdiff = difftool --no-prompt -t meld
 	dif = diff
 	hsow = show
+	psuh = push
 	d = diff --patience
 	rh = reset --hard
 	rh0 = reset --hard HEAD
@@ -49,6 +51,20 @@
 	showwwwwwwwww = show HEAD~9
 	showwwwwwwwwww = show HEAD~10
 	showwwwwwwwwwww = show HEAD~11
+	showwwwwwwwwwwww = show HEAD~12
+	showwwwwwwwwwwwww = show HEAD~13
+	showwwwwwwwwwwwwww = show HEAD~14
+	showwwwwwwwwwwwwwww = show HEAD~15
+	showwwwwwwwwwwwwwwww = show HEAD~16
+	showwwwwwwwwwwwwwwwww = show HEAD~17
+	showwwwwwwwwwwwwwwwwww = show HEAD~18
+	showwwwwwwwwwwwwwwwwwww = show HEAD~19
+	showwwwwwwwwwwwwwwwwwwww = show HEAD~20
+	showwwwwwwwwwwwwwwwwwwwww = show HEAD~21
+	showwwwwwwwwwwwwwwwwwwwwww = show HEAD~22
+	showwwwwwwwwwwwwwwwwwwwwwww = show HEAD~23
+	showwwwwwwwwwwwwwwwwwwwwwwww = show HEAD~24
+	showwwwwwwwwwwwwwwwwwwwwwwwww = show HEAD~25
 [url "git@github.com:simonlindholm/"]
 	pushInsteadOf = "https://github.com/simonlindholm/"
 [pager]
@@ -56,5 +72,8 @@
 	diff = diff-highlight | less
 	show = diff-highlight | less
 	log = diff-highlight | less
+	branch = false
 [core]
 	excludesfile = ~/.gitignore
+[submodule]
+	recurse = true
