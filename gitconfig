@@ -38,6 +38,7 @@
 	psuh = push
 	d = diff --patience
 	rh = reset --hard
+	pm = fetch origin master:master
 	rh0 = reset --hard HEAD
 	rh1 = reset --hard HEAD~
 	showw = show HEAD~
