@@ -8,11 +8,14 @@
 [interactive]
 	# sudo apt install libterm-readkey-perl / cpan Term::ReadKey
 	singlekey = true
+	# diffFilter = perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight
 [rebase]
 	autosquash = true
+	autostash = true
 [diff]
 	# Detect renames as well as copies
 	renames = copies
+	# compactionHeuristic = true
 [push]
 	# 'git push' should only push the current branch
 	default = upstream
@@ -38,9 +41,9 @@
 	psuh = push
 	d = diff --patience
 	rh = reset --hard
-	pm = fetch origin master:master
 	rh0 = reset --hard HEAD
 	rh1 = reset --hard HEAD~
+	pm = fetch origin master:master
 	showw = show HEAD~
 	showww = show HEAD~2
 	showwww = show HEAD~3
@@ -69,11 +72,15 @@
 [url "git@github.com:simonlindholm/"]
 	pushInsteadOf = "https://github.com/simonlindholm/"
 [pager]
-	# diff-highlight, from /usr/share/doc/git/contrib/diff-highlight, with HIGHLIGHT="\x1b[1m", UNHIGHLIGHT="\x1b[22m".
-	diff = diff-highlight | less
-	show = diff-highlight | less
-	log = diff-highlight | less
+	diff = perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | less
+	show = perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | less
+	log = perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight | less
 	branch = false
+[color "diff-highlight"]
+	oldNormal = red
+	oldHighlight = red bold
+	newNormal = green
+	newHighlight = green bold
 [core]
 	excludesfile = ~/.gitignore
 [submodule]
