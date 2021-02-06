@@ -174,6 +174,9 @@ export LESS="-Ric"
 # Colorize gcc output with 4.9 or later
 export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
 
+# Fix directory colors for executable files on Windows
+# export LS_COLORS=$LS_COLORS:"ow=01;34"
+
 # Allow Ctrl+S, Ctrl+Q
 stty start undef
 stty stop undef
