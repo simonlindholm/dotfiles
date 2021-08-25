@@ -1,2 +1,20 @@
-import rlcompleter, readline
+import rlcompleter, readline, random, math, re, sys, os, inspect, time, struct
+from math import *
+del pow
 readline.parse_and_bind('tab:complete')
+
+def disas(x):
+    print(inspect.getsource(x))
+
+def tempcol(f): # 0 = red, 1 = green
+    cols = [2-f*2, 1, 2-f*2] if f >= 0.5 else [1, 2*f, 2*f]
+    return [min(max(round(x * 255), 0), 255) for x in cols]
+
+def color(cols, fg=38):
+    r,g,b = tempcol(cols) if isinstance(cols, float) else cols
+    return f"\x1b[{fg};2;{r};{g};{b}m"
+
+def bgcolor(f):
+    return color(f, 48)
+
+RESET = "\x1b[0m"
