@@ -137,12 +137,12 @@ alias la='ls -A'
 alias n='nice -n'
 alias rmb='/bin/rm *~'
 alias open='xdg-open'
-alias c='g++-6 -Wall -Wfatal-errors -g -fsanitize=undefined,address -Wconversion -std=c++11 -DLOCAL -fconcepts' # -fno-sanitize-recover=all
+alias c='g++ -Wall -Wfatal-errors -g -fsanitize=undefined,address -Wconversion -std=c++17 -DLOCAL -fconcepts' # -fno-sanitize-recover=all
 # alias c='clang++-6.0 -Wall -Wconversion -Wno-sign-conversion -Wfatal-errors -g -fsanitize=address,undefined -stdlib=libc++ -std=c++14 -include /usr/include/c++/v1/bits/stdc++.h' # -fno-sanitize-recover=all
-alias c2='g++ -Wall -Wfatal-errors -g -fsanitize=undefined -Wconversion -D_GLIBCXX_DEBUG -std=c++14'
-alias copt='g++ -Wall -Wconversion -Wno-sign-conversion -Wfatal-errors -g -std=c++14 -O2'
-alias make='make -j2'
-alias ap='sudo apt-get'
+alias c2='g++ -Wall -Wfatal-errors -g -fsanitize=undefined -Wconversion -D_GLIBCXX_DEBUG -std=c++17'
+alias copt='g++ -Wall -Wconversion -Wno-sign-conversion -Wfatal-errors -g -std=c++17 -O2'
+alias make='make -j16'
+alias ap='sudo apt'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"' # (e.g. sleep 10; alert)
 alias touchold='touch -t 200001010101'
 function apc() {
@@ -204,6 +204,10 @@ function pdfl {
 
 export EDITOR=/usr/bin/vim
 export PYTHONSTARTUP=~/.pythonrc
+export PYTHONDONTWRITEBYTECODE=1
+
+# poetry asks for password for no reason; disable its ability to do that
+export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
