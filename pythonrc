@@ -1,4 +1,5 @@
 import rlcompleter, readline, random, math, re, sys, os, inspect, time, struct
+from base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
 from math import *
 del pow
 readline.parse_and_bind('tab:complete')
@@ -16,5 +17,14 @@ def color(cols, fg=38):
 
 def bgcolor(f):
     return color(f, 48)
+
+def ftoi(x):
+    return struct.unpack(">I", struct.pack(">f", x))[0]
+
+def itof(x):
+    return struct.unpack(">f", struct.pack(">I", x))[0]
+
+def tofloat(x):
+    return itof(ftoi(x))
 
 RESET = "\x1b[0m"
