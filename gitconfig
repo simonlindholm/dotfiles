@@ -12,6 +12,8 @@
 [rebase]
 	autosquash = true
 	autostash = true
+[branch]
+	sort = -committerdate
 [diff]
 	# Detect renames as well as copies
 	renames = copies
